@@ -171,26 +171,27 @@ CLI Entry:     logintel (poetry script or python -m logintel)
 
 ## Implementation Phases
 
-### Phase 0: Foundation (Week 1)
+### Phase 0: Foundation (Week 1) ✅
 
-- [ ] Project scaffolding (Python, MCP SDK, build setup)
-- [ ] `LogProvider` abstraction interface
-- [ ] Configuration system (sources, credentials, defaults)
-- [ ] `list_log_sources` tool
-- [ ] `get_source_health` tool
-- [ ] Basic error handling and logging (to stderr only!)
-- [ ] MCP Inspector testing setup
+- [x] Project scaffolding (Python, MCP SDK, build setup)
+- [x] `LogProvider` abstraction interface
+- [x] Configuration system (sources, credentials, defaults)
+- [x] `list_log_sources` tool
+- [x] `get_source_health` tool
+- [x] `get_source_schema` tool
+- [x] Basic error handling and logging (to stderr only!)
+- [x] MCP Inspector testing setup
 
-### Phase 1: Local File Provider (Week 1-2)
+### Phase 1: Local File Provider (Week 1-2) ✅
 
-- [ ] Implement `LocalFileProvider`
-- [ ] `search_logs` — grep/regex across files, with time range filtering
-- [ ] `filter_logs` — structured filter by level, service, timestamp
-- [ ] `tail_logs` — follow log files (tail -f equivalent)
-- [ ] Support JSON-structured log parsing (auto-extract fields)
-- [ ] Support plain text logs with regex field extraction
-- [ ] `aggregate_logs` — count, group by field, time bucketing
-- [ ] `summarize_logs` — feed logs to LLM for summarization
+- [x] Implement `LocalFileProvider`
+- [x] `search_logs` — grep/regex across files, with time range filtering
+- [x] `filter_logs` — structured filter by level, service, timestamp
+- [x] `tail_logs` — follow log files (tail -f equivalent)
+- [x] Support JSON-structured log parsing (auto-extract fields)
+- [x] Support plain text logs with regex field extraction
+- [x] `aggregate_logs` — count, group by field, time bucketing
+- [x] `summarize_logs` — feed logs to LLM for summarization
 
 ### Phase 2: CloudWatch Provider (Week 2-3)
 

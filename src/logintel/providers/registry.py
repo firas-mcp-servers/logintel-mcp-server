@@ -79,12 +79,19 @@ class ProviderRegistry:
 
     def _create_provider(self, source_id: str, config: SourceConfig) -> LogProvider:
         """Factory method to create the right provider for a source config."""
-        # TODO: Add real provider implementations here as they are built.
-        # if config.type == "local":
-        #     from logintel.providers.local import LocalFileProvider
-        #     return LocalFileProvider(source_id, config)
+        if config.type == "local":
+            from logintel.providers.local import LocalFileProvider
+
+            return LocalFileProvider(source_id, config)
         # elif config.type == "cloudwatch":
-        #     ...
+        #     from logintel.providers.cloudwatch import CloudWatchProvider
+        #     return CloudWatchProvider(source_id, config)
+        # elif config.type == "datadog":
+        #     from logintel.providers.datadog import DatadogProvider
+        #     return DatadogProvider(source_id, config)
+        # elif config.type == "loki":
+        #     from logintel.providers.loki import LokiProvider
+        #     return LokiProvider(source_id, config)
         return StubProvider(source_id, config.type, config)
 
     def get(self, source_id: str) -> LogProvider:

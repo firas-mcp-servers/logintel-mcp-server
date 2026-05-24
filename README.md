@@ -15,10 +15,24 @@ Ask your AI assistant questions like:
 
 - 🔌 **Multi-backend support** — Datadog, Grafana Loki, AWS CloudWatch, local files
 - 🔍 **Natural language queries** — Ask in plain English, get structured results
+- 📁 **Local file provider** — Search, filter, tail, and aggregate JSON/regex/plain-text logs
 - 🧠 **Intelligent analysis** — Error pattern detection, anomaly detection, root cause analysis
 - 🔗 **Cross-service correlation** — Trace ID, timestamp proximity, and field matching
 - ⚡ **Streaming & pagination** — Handle large result sets without context overflow
 - 🛡️ **Read-only by default** — Safe to use in production; no log mutation
+
+### Implemented MCP Tools
+
+| Tool | Description | Phase |
+|------|-------------|-------|
+| `list_log_sources` | List all configured log sources | 0 |
+| `get_source_health` | Check connectivity of a source | 0 |
+| `get_source_schema` | Get field/schema info for a source | 0 |
+| `search_logs` | Search logs with natural language or query | 1 |
+| `filter_logs` | Filter by time, level, service, host, fields | 1 |
+| `tail_logs` | Return latest N entries from a source | 1 |
+| `aggregate_logs` | Count/group by field, time bucketing | 1 |
+| `summarize_logs` | Generate natural language summary | 1 |
 
 ## Quick Start
 
@@ -149,15 +163,15 @@ npx -y @modelcontextprotocol/inspector
 
 See [AGENTS.md](AGENTS.md) for the full implementation plan. High-level phases:
 
-| Phase | Focus | Timeline |
-|-------|-------|----------|
-| 0 | Foundation — scaffolding, config, health checks | Week 1 |
-| 1 | Local File Provider — grep, tail, JSON parsing | Week 1-2 |
-| 2 | CloudWatch Provider — Logs Insights, patterns | Week 2-3 |
-| 3 | Datadog Provider — Log Search, analytics | Week 3-4 |
-| 4 | Loki Provider — LogQL, label filtering | Week 4-5 |
-| 5 | Intelligence Layer — root cause, correlation | Week 5-6 |
-| 6 | Polish — tests, Docker, PyPI, CI/CD | Week 6-7 |
+| Phase | Focus | Status |
+|-------|-------|--------|
+| 0 | Foundation — scaffolding, config, health checks | ✅ Complete |
+| 1 | Local File Provider — grep, tail, JSON parsing, aggregation | ✅ Complete |
+| 2 | CloudWatch Provider — Logs Insights, patterns | 🔲 Planned |
+| 3 | Datadog Provider — Log Search, analytics | 🔲 Planned |
+| 4 | Loki Provider — LogQL, label filtering | 🔲 Planned |
+| 5 | Intelligence Layer — root cause, correlation | 🔲 Planned |
+| 6 | Polish — tests, Docker, PyPI, CI/CD | 🔲 Planned |
 
 ## Contributing
 
