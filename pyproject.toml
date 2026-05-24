@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "logintel-mcp"
+version = "0.1.0"
+description = "Universal MCP server for application log intelligence across Datadog, Grafana Loki, AWS CloudWatch, and local files."
+authors = ["Firas <firas@example.com>"]
+readme = "README.md"
+license = "MIT"
+packages = [{ include = "logintel", from = "src" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Logging",
+]
+
+[tool.poetry.scripts]
+logintel = "logintel.__main__:main"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+mcp = "^1.6.0"
+pydantic = "^2.10"
+pydantic-settings = "^2.7"
+httpx = "^0.28"
+boto3 = "^1.35"
+cachetools = "^5.5"
+pyyaml = "^6.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3"
+pytest-asyncio = "^0.25"
+pytest-httpx = "^0.35"
+moto = "^5.0"
+respx = "^0.22"
+ruff = "^0.9"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "N", "UP", "B", "C4", "SIM"]
