@@ -1,0 +1,38 @@
+version: "1.0"
+
+sources:
+  local-app:
+    type: local
+    paths:
+      - "/var/log/myapp/*.log"
+      - "/var/log/nginx/*.log"
+    parseJson: true
+    timestampField: "timestamp"
+    levelField: "level"
+    serviceField: "service"
+
+  cloudwatch-app:
+    type: cloudwatch
+    region: "us-east-1"
+    profile: "production"
+
+  datadog-prod:
+    type: datadog
+    apiKey: "${DATADOG_API_KEY}"
+    appKey: "${DATADOG_APP_KEY}"
+    site: "datadoghq.com"
+
+  loki-default:
+    type: loki
+    url: "http://localhost:3100"
+
+defaults:
+  timeRange: "1h"
+  maxResults: 100
+  timezone: "UTC"
+
+intelligence:
+  enableCaching: true
+  cacheTtlSeconds: 60
+  anomalySensitivity: "medium"
+  maxCorrelationDepth: 3

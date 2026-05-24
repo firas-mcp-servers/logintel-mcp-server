@@ -3,9 +3,7 @@
 import tempfile
 from pathlib import Path
 
-import pytest
-
-from logintel.config import DefaultsConfig, Settings, SourceConfig
+from logintel.config import Settings
 
 
 class TestSettings:
@@ -26,9 +24,7 @@ defaults:
 intelligence:
   enableCaching: false
 """
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".yaml", delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
 
