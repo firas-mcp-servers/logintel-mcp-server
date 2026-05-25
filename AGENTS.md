@@ -344,7 +344,7 @@ npx -y @modelcontextprotocol/inspector
   "mcpServers": {
     "log-intel": {
       "command": "npx",
-      "args": ["-y", "@logintel/mcp-server", "--config", "./.logintelrc.yaml"]
+      "args": ["-y", "logintel-mcp-server", "--config", "./.logintelrc.yaml"]
     }
   }
 }
@@ -366,7 +366,7 @@ npx -y @modelcontextprotocol/inspector
 | Registry | Package |
 |----------|---------|
 | PyPI | `logintel-mcp` |
-| npm | `@logintel/mcp-server` |
+| npm | `logintel-mcp-server` |
 | GitHub Container Registry | `ghcr.io/firas-mcp-servers/logintel-mcp-server` |
 | GitHub | `firas-mcp-servers/logintel-mcp-server` |
 

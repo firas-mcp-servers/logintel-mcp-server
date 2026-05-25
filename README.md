@@ -70,7 +70,7 @@ uvx -y logintel-mcp --config ~/.logintelrc.yaml
 #### npm (wrapper)
 
 ```bash
-npx -y @logintel/mcp-server --config ~/.logintelrc.yaml
+npx -y logintel-mcp-server --config ~/.logintelrc.yaml
 ```
 
 #### Docker (GHCR)
@@ -186,7 +186,7 @@ Add to `.cursor/mcp.json`:
   "mcpServers": {
     "log-intel": {
       "command": "npx",
-      "args": ["-y", "@logintel/mcp-server", "--config", "./.logintelrc.yaml"]
+      "args": ["-y", "logintel-mcp-server", "--config", "./.logintelrc.yaml"]
     }
   }
 }
