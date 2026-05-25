@@ -84,34 +84,4 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  npm:
-    runs-on: ubuntu-latest
-    needs: github-release
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Configure npm auth
-        working-directory: ./npm
-        run: echo "//registry.npmjs.org/:_authToken=${NPMJS_TOKEN}" > .npmrc
-        env:
-          NPMJS_TOKEN: ${{ secrets.NPMJS_TOKEN }}
-
-      - name: Verify npm auth
-        working-directory: ./npm
-        run: npm whoami || echo "npm auth failed"
-        continue-on-error: true
-
-      - name: Sync version and publish
-        working-directory: ./npm
-        run: |
-          VERSION=${GITHUB_REF_NAME#v}
-          npm version "$VERSION" --no-git-tag-version
-          npm publish --access public
-        continue-on-error: true

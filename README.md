@@ -67,12 +67,6 @@ uv pip install logintel-mcp
 uvx -y logintel-mcp --config ~/.logintelrc.yaml
 ```
 
-#### npm (wrapper)
-
-```bash
-npx -y logintel-mcp-server --config ~/.logintelrc.yaml
-```
-
 #### Docker (GHCR)
 
 ```bash
@@ -185,8 +179,8 @@ Add to `.cursor/mcp.json`:
 {
   "mcpServers": {
     "log-intel": {
-      "command": "npx",
-      "args": ["-y", "logintel-mcp-server", "--config", "./.logintelrc.yaml"]
+      "command": "python",
+      "args": ["-m", "logintel", "--config", "./.logintelrc.yaml"]
     }
   }
 }

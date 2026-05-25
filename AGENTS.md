@@ -162,7 +162,7 @@ CI/CD:       GitHub Actions
 | 3 | Datadog Provider — Logs v2 API, analytics, 100% coverage | ✅ |
 | 4 | Loki Provider — LogQL, label filtering, metric queries, 100% coverage | ✅ |
 | 5 | Intelligence Layer — cache, correlate, RCA, compare, NL2Query, prompts | ✅ |
-| 6 | Polish — Docker, PyPI, npm, GitHub Actions CI/CD, docs | ✅ |
+| 6 | Polish — Docker, PyPI, GitHub Actions CI/CD, docs | ✅ |
 
 ---
 
@@ -366,7 +366,6 @@ npx -y @modelcontextprotocol/inspector
 | Registry | Package |
 |----------|---------|
 | PyPI | `logintel-mcp` |
-| npm | `logintel-mcp-server` |
 | GitHub Container Registry | `ghcr.io/firas-mcp-servers/logintel-mcp-server` |
 | GitHub | `firas-mcp-servers/logintel-mcp-server` |
 

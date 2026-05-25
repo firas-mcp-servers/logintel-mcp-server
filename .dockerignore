@@ -19,7 +19,6 @@ env
 !LICENSE
 Dockerfile
 .dockerignore
-npm/
 tests/
 .pytest_cache
 .coverage
