@@ -100,5 +100,6 @@ jobs:
       - name: Publish to npm
         working-directory: ./npm
         run: npm publish --access public
+        continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
