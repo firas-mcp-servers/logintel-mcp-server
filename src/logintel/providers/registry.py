@@ -87,9 +87,10 @@ class ProviderRegistry:
             from logintel.providers.cloudwatch import CloudWatchProvider
 
             return CloudWatchProvider(source_id, config)
-        # elif config.type == "datadog":
-        #     from logintel.providers.datadog import DatadogProvider
-        #     return DatadogProvider(source_id, config)
+        elif config.type == "datadog":
+            from logintel.providers.datadog import DatadogProvider
+
+            return DatadogProvider(source_id, config)
         # elif config.type == "loki":
         #     from logintel.providers.loki import LokiProvider
         #     return LokiProvider(source_id, config)

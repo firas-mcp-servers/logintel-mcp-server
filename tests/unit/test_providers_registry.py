@@ -83,6 +83,16 @@ class TestProviderRegistryAllProviders:
         assert "local-app" in providers
 
 
+class TestProviderRegistryUnknownType:
+    """Scenarios for unknown source types falling back to StubProvider."""
+
+    def test_when_type_is_unknown_then_returns_stub_provider(self):
+        settings = Settings(sources={"unknown-app": SourceConfig(type="splunk")})
+        registry = ProviderRegistry(settings)
+        provider = registry.get("unknown-app")
+        assert provider.type == "splunk"
+
+
 class TestStubProvider:
     """Scenarios for the StubProvider placeholder."""
 
