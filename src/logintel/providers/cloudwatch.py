@@ -189,7 +189,9 @@ class CloudWatchProvider(LogProvider):
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _parse_insights_results(results: list[list[dict]]) -> list[LogEntry]:
+    def _parse_insights_results(
+        results: list[list[dict]], source_id: str = "cloudwatch"
+    ) -> list[LogEntry]:
         """Parse CloudWatch Insights tabular results into LogEntry objects."""
         entries: list[LogEntry] = []
         for row in results:
@@ -243,7 +245,7 @@ class CloudWatchProvider(LogProvider):
                     service=service,
                     host=log_stream,
                     trace_id=str(trace_id) if trace_id else None,
-                    source="cloudwatch",
+                    source=source_id,
                     fields=extra,
                     raw=row_dict,
                 )
@@ -375,7 +377,7 @@ class CloudWatchProvider(LogProvider):
 
             # Poll for completion
             results = await self._wait_for_query(client, query_id)
-            entries = self._parse_insights_results(results)
+            entries = self._parse_insights_results(results, self._id)
             return SearchResult(
                 entries=entries,
                 total=len(entries),
@@ -410,7 +412,7 @@ class CloudWatchProvider(LogProvider):
             query_id = resp["queryId"]
 
             results = await self._wait_for_query(client, query_id)
-            entries = self._parse_insights_results(results)
+            entries = self._parse_insights_results(results, self._id)
             return SearchResult(
                 entries=entries,
                 total=len(entries),
@@ -520,7 +522,7 @@ class CloudWatchProvider(LogProvider):
                             service=service,
                             host=log_stream,
                             trace_id=str(trace_id) if trace_id else None,
-                            source="cloudwatch",
+                            source=self._id,
                             fields=extra,
                             raw=event,
                         )
@@ -561,7 +563,7 @@ class CloudWatchProvider(LogProvider):
             results = await self._wait_for_query(client, query_id)
 
             if results:
-                sample = self._parse_insights_results([results[0]])[0]
+                sample = self._parse_insights_results([results[0]], self._id)[0]
                 return SchemaInfo(
                     source=self._id,
                     fields=fields,

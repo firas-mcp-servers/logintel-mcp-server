@@ -145,7 +145,7 @@ class TestSearch:
         assert result.entries[0].service == "api"
         assert result.entries[0].host == "host-1"
         assert result.entries[0].trace_id == "abc123"
-        assert result.entries[0].source == "loki"
+        assert result.entries[0].source == "loki-test"
 
         # Verify request params
         call_params = mock_client.get.call_args.kwargs["params"]

@@ -139,7 +139,9 @@ class DatadogProvider(LogProvider):
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _parse_search_results(data: list[dict[str, Any]]) -> list[LogEntry]:
+    def _parse_search_results(
+        data: list[dict[str, Any]], source_id: str = "datadog"
+    ) -> list[LogEntry]:
         """Parse Datadog search response data into LogEntry objects."""
         entries: list[LogEntry] = []
         for item in data:
@@ -176,7 +178,7 @@ class DatadogProvider(LogProvider):
                     service=service,
                     host=host,
                     trace_id=str(trace_id) if trace_id else None,
-                    source="datadog",
+                    source=source_id,
                     fields=extra,
                     raw=item,
                 )
@@ -300,7 +302,7 @@ class DatadogProvider(LogProvider):
             resp.raise_for_status()
             result_data = resp.json()
 
-            entries = self._parse_search_results(result_data.get("data", []))
+            entries = self._parse_search_results(result_data.get("data", []), self._id)
             meta = result_data.get("meta", {})
             cursor = self._extract_cursor(meta)
 
@@ -330,7 +332,7 @@ class DatadogProvider(LogProvider):
             resp.raise_for_status()
             result_data = resp.json()
 
-            entries = self._parse_search_results(result_data.get("data", []))
+            entries = self._parse_search_results(result_data.get("data", []), self._id)
             meta = result_data.get("meta", {})
             cursor = self._extract_cursor(meta)
 
@@ -356,7 +358,10 @@ class DatadogProvider(LogProvider):
             resp.raise_for_status()
             result_data = resp.json()
 
-            return self._parse_aggregate_results(result_data.get("data", []))
+            buckets = result_data.get("data", {})
+            if isinstance(buckets, dict):
+                buckets = buckets.get("buckets", [])
+            return self._parse_aggregate_results(buckets)
         except Exception:  # noqa: BLE001
             logger.exception("Datadog aggregate failed for source '%s'", self._id)
             return AggregateResult(buckets=[], total=0)
@@ -381,7 +386,7 @@ class DatadogProvider(LogProvider):
             resp.raise_for_status()
             result_data = resp.json()
 
-            entries = self._parse_search_results(result_data.get("data", []))
+            entries = self._parse_search_results(result_data.get("data", []), self._id)
             return SearchResult(entries=entries, total=len(entries))
         except Exception:  # noqa: BLE001
             logger.exception("Datadog tail failed for source '%s'", self._id)
@@ -410,7 +415,7 @@ class DatadogProvider(LogProvider):
                 result_data = resp.json()
                 data = result_data.get("data", [])
                 if data:
-                    entries = self._parse_search_results([data[0]])
+                    entries = self._parse_search_results([data[0]], self._id)
                     return SchemaInfo(
                         source=self._id,
                         fields=fields,

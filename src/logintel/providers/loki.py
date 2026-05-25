@@ -181,7 +181,7 @@ class LokiProvider(LogProvider):
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _parse_stream_results(data: dict[str, Any]) -> list[LogEntry]:
+    def _parse_stream_results(data: dict[str, Any], source_id: str = "loki") -> list[LogEntry]:
         """Parse Loki streams response into LogEntry objects."""
         entries: list[LogEntry] = []
         results = data.get("data", {}).get("result", [])
@@ -234,7 +234,7 @@ class LokiProvider(LogProvider):
                         service=service,
                         host=host,
                         trace_id=str(trace_id) if trace_id else None,
-                        source="loki",
+                        source=source_id,
                         fields=fields,
                         raw={"stream": stream_labels, "line": line},
                     )
@@ -345,7 +345,7 @@ class LokiProvider(LogProvider):
             )
             resp.raise_for_status()
             result_data = resp.json()
-            entries = self._parse_stream_results(result_data)
+            entries = self._parse_stream_results(result_data, self._id)
             return SearchResult(entries=entries, total=len(entries))
         except Exception:
             logger.exception("Loki search failed for source '%s'", self._id)
@@ -371,7 +371,7 @@ class LokiProvider(LogProvider):
             )
             resp.raise_for_status()
             result_data = resp.json()
-            entries = self._parse_stream_results(result_data)
+            entries = self._parse_stream_results(result_data, self._id)
             return SearchResult(entries=entries, total=len(entries))
         except Exception:
             logger.exception("Loki filter failed for source '%s'", self._id)
@@ -428,7 +428,7 @@ class LokiProvider(LogProvider):
             )
             resp.raise_for_status()
             result_data = resp.json()
-            entries = self._parse_stream_results(result_data)
+            entries = self._parse_stream_results(result_data, self._id)
             return SearchResult(entries=entries, total=len(entries))
         except Exception:
             logger.exception("Loki tail failed for source '%s'", self._id)
@@ -466,7 +466,7 @@ class LokiProvider(LogProvider):
                 )
                 if sample_resp.status_code == 200:
                     sample_data = sample_resp.json()
-                    entries = self._parse_stream_results(sample_data)
+                    entries = self._parse_stream_results(sample_data, self._id)
                     if entries:
                         return SchemaInfo(
                             source=self._id,
