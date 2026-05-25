@@ -25,7 +25,7 @@ class FilterParams(BaseModel):
     level: str | None = None
     service: str | None = None
     host: str | None = None
-    trace_id: str | None = Field(default=None, alias="traceId")
+    trace_id: str | None = None
     custom_fields: dict[str, Any] = Field(default_factory=dict)
     limit: int = Field(default=100, ge=1, le=1000)
     offset: str | None = None

@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from logintel.cache import QueryCache
 from logintel.config import Settings
@@ -42,12 +43,12 @@ def create_server(
 
     mcp = FastMCP("logintel")
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def list_log_sources() -> dict:
         """List all configured log sources."""
         return {"sources": registry.list_sources()}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def get_source_health(source: str) -> dict:
         """Check connectivity and health of a log source."""
         try:
@@ -69,7 +70,7 @@ def create_server(
                 "message": str(exc),
             }
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def get_source_schema(source: str) -> dict:
         """Get field/schema info for a log source."""
         try:
@@ -93,7 +94,7 @@ def create_server(
                 "error": str(exc),
             }
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def search_logs(
         source: str,
         query: str,
@@ -119,7 +120,7 @@ def create_server(
             logger.exception("search_logs failed for source '%s'", source)
             return {"error": str(exc), "entries": []}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def filter_logs(
         source: str,
         time_range: dict | None = None,
@@ -153,7 +154,7 @@ def create_server(
             logger.exception("filter_logs failed for source '%s'", source)
             return {"error": str(exc), "entries": []}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def tail_logs(
         source: str,
         lines: int = 50,
@@ -175,7 +176,7 @@ def create_server(
             logger.exception("tail_logs failed for source '%s'", source)
             return {"error": str(exc), "entries": []}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def aggregate_logs(
         source: str,
         time_range: dict | None = None,
@@ -205,7 +206,7 @@ def create_server(
             logger.exception("aggregate_logs failed for source '%s'", source)
             return {"error": str(exc), "buckets": [], "total": 0}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def summarize_logs(source: str, query: str = "", limit: int = 100) -> dict:
         """Generate a natural language summary of a set of logs."""
         try:
@@ -262,7 +263,7 @@ def create_server(
     # Phase 5 — Intelligence tools
     # ------------------------------------------------------------------
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def correlate_logs(
         sources: list[str],
         time_range: dict | None = None,
@@ -300,7 +301,7 @@ def create_server(
             logger.exception("correlate_logs failed")
             return {"error": str(exc), "groups": [], "total_entries": 0}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def analyze_root_cause(
         service: str,
         time_range: dict,
@@ -339,7 +340,7 @@ def create_server(
             logger.exception("analyze_root_cause failed")
             return {"error": str(exc), "likely_causes": []}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def compare_time_periods(
         source: str,
         baseline_range: dict,
@@ -377,7 +378,7 @@ def create_server(
             logger.exception("compare_time_periods failed for source '%s'", source)
             return {"error": str(exc)}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def detect_error_patterns(
         source: str,
         time_range: dict | None = None,
@@ -402,7 +403,7 @@ def create_server(
             logger.exception("detect_error_patterns failed for source '%s'", source)
             return {"error": str(exc), "patterns": []}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def find_anomalies(
         source: str,
         time_range: dict | None = None,
@@ -426,7 +427,7 @@ def create_server(
             logger.exception("find_anomalies failed for source '%s'", source)
             return {"error": str(exc), "anomalies": []}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def natural_language_to_query(source: str, question: str) -> dict:
         """Translate a natural language question into the target backend's native query language."""
         try:
@@ -439,7 +440,7 @@ def create_server(
             logger.exception("natural_language_to_query failed for source '%s'", source)
             return {"error": str(exc)}
 
-    @mcp.tool(annotations={"readOnlyHint": True})
+    @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
     async def explain_query(source: str, query: str) -> dict:
         """Explain what a backend-specific query does in plain English."""
         try:

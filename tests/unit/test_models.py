@@ -36,8 +36,8 @@ class TestLogEntry:
             level="INFO",
             message="OK",
             source="test",
-            traceId="abc123",
-            spanId="def456",
+            trace_id="abc123",
+            span_id="def456",
         )
         assert entry.trace_id == "abc123"
         assert entry.span_id == "def456"
@@ -92,7 +92,7 @@ class TestFilterParams:
     """Scenarios for FilterParams validation and behavior."""
 
     def test_when_created_with_trace_id_alias_then_trace_id_is_resolved(self):
-        params = FilterParams(source="test", traceId="trace-123")
+        params = FilterParams(source="test", trace_id="trace-123")
         assert params.trace_id == "trace-123"
 
     def test_when_created_with_custom_fields_then_fields_are_preserved(self):

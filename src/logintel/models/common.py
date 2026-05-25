@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 from enum import Enum
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class LogLevel(str, Enum):
@@ -21,10 +21,21 @@ class LogLevel(str, Enum):
 class TimeRange(BaseModel):
     """Time range for queries."""
 
-    from_time: str = Field(alias="from")
-    to_time: str | None = Field(default=None, alias="to")
+    from_time: str
+    to_time: str | None = None
 
     model_config = {"populate_by_name": True}
+
+    @model_validator(mode="before")
+    @classmethod
+    def _map_aliases(cls, data):
+        if isinstance(data, dict):
+            data = dict(data)
+            if "from" in data:
+                data["from_time"] = data.pop("from")
+            if "to" in data:
+                data["to_time"] = data.pop("to")
+        return data
 
 
 class LogEntry(BaseModel):
@@ -35,8 +46,8 @@ class LogEntry(BaseModel):
     message: str  # Raw or rendered message
     service: str | None = None  # Service name
     host: str | None = None  # Host/container
-    trace_id: str | None = Field(default=None, alias="traceId")
-    span_id: str | None = Field(default=None, alias="spanId")
+    trace_id: str | None = None
+    span_id: str | None = None
     source: str  # Source ID
     fields: dict[str, Any] = Field(default_factory=dict)  # Extracted structured fields
     raw: Any | None = None  # Provider-specific raw data
