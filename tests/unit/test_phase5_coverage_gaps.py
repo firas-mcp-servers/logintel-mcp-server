@@ -27,6 +27,7 @@ def _make_entry(ts: str, level: str = "INFO", msg: str = "m") -> LogEntry:
 # Comparator branches
 # ------------------------------------------------------------------
 
+
 class TestGenerateSummaryGaps:
     """Hit uncovered branches in _generate_summary."""
 
@@ -50,6 +51,7 @@ class TestGenerateSummaryGaps:
 # ------------------------------------------------------------------
 # Correlator branches
 # ------------------------------------------------------------------
+
 
 class TestCorrelatorGaps:
     """Hit uncovered branches in correlator."""
@@ -77,6 +79,7 @@ class TestCorrelatorGaps:
 # NL2Query branches
 # ------------------------------------------------------------------
 
+
 class TestNl2QueryGaps:
     """Hit uncovered branches in NL2Query."""
 
@@ -90,7 +93,7 @@ class TestNl2QueryGaps:
 
     def test_loki_keyword_line_filter_when_no_labels(self):
         result = translate("Show me timeouts", "loki")
-        assert "|= \"timeouts\"" in result["query"]
+        assert '|= "timeouts"' in result["query"]
 
     def test_cloudwatch_warn_keyword(self):
         result = translate("Show me warnings", "cloudwatch")
@@ -125,6 +128,7 @@ class TestNl2QueryGaps:
 # Root cause branches
 # ------------------------------------------------------------------
 
+
 class TestRootCauseGaps:
     """Hit uncovered branches in root_cause."""
 
@@ -138,15 +142,14 @@ class TestRootCauseGaps:
 # Server exception branches
 # ------------------------------------------------------------------
 
+
 class TestServerExceptionBranches:
     """Hit exception handlers in new server tools."""
 
     @pytest.fixture
     def mcp(self, tmp_path):
         log_file = tmp_path / "app.jsonl"
-        log_file.write_text(
-            '{"timestamp":"2026-05-24T10:00:00Z","level":"INFO","message":"ok"}\n'
-        )
+        log_file.write_text('{"timestamp":"2026-05-24T10:00:00Z","level":"INFO","message":"ok"}\n')
         config = tmp_path / "config.yaml"
         config.write_text(
             f"sources:\n"
@@ -166,9 +169,7 @@ class TestServerExceptionBranches:
             "logintel.server.ProviderRegistry.get",
             side_effect=RuntimeError("boom"),
         ):
-            result = await mcp.call_tool(
-                "detect_error_patterns", {"source": "local-app"}
-            )
+            result = await mcp.call_tool("detect_error_patterns", {"source": "local-app"})
         data = __import__("json").loads(result[0].text)
         assert "error" in data
 
@@ -178,9 +179,7 @@ class TestServerExceptionBranches:
             "logintel.server.ProviderRegistry.get",
             side_effect=RuntimeError("boom"),
         ):
-            result = await mcp.call_tool(
-                "find_anomalies", {"source": "local-app"}
-            )
+            result = await mcp.call_tool("find_anomalies", {"source": "local-app"})
         data = __import__("json").loads(result[0].text)
         assert "error" in data
 
@@ -267,6 +266,7 @@ class TestServerExceptionBranches:
 # ------------------------------------------------------------------
 # Server cache hit branches (direct coverage via monkeypatch)
 # ------------------------------------------------------------------
+
 
 class TestServerCacheBranches:
     """Hit cache hit branches by pre-seeding the cache."""

@@ -149,9 +149,7 @@ class TestParseMetricResultsGaps:
         data = {
             "data": {
                 "resultType": "vector",
-                "result": [
-                    {"metric": {"service": "api"}, "value": [1716540000]}
-                ],
+                "result": [{"metric": {"service": "api"}, "value": [1716540000]}],
             }
         }
         agg = LokiProvider._parse_metric_results(data)
@@ -179,9 +177,7 @@ class TestFilterGaps:
     """Hit branches in filter not covered by main tests."""
 
     @pytest.mark.asyncio
-    async def test_filter_no_filters_no_defaults_empty_selector(
-        self, provider: LokiProvider
-    ):
+    async def test_filter_no_filters_no_defaults_empty_selector(self, provider: LokiProvider):
         mock_resp = _make_mock_response(
             200, {"status": "success", "data": {"resultType": "streams", "result": []}}
         )
@@ -347,12 +343,8 @@ class TestGetSchemaGaps:
     """Hit branches in get_schema not covered by main tests."""
 
     @pytest.mark.asyncio
-    async def test_labels_ok_but_sample_not_ok_then_no_sample_log(
-        self, provider: LokiProvider
-    ):
-        labels_resp = _make_mock_response(
-            200, {"status": "success", "data": ["env"]}
-        )
+    async def test_labels_ok_but_sample_not_ok_then_no_sample_log(self, provider: LokiProvider):
+        labels_resp = _make_mock_response(200, {"status": "success", "data": ["env"]})
         sample_resp = _make_mock_response(500, {"error": "boom"})
         mock_client = MagicMock()
         mock_client.get = AsyncMock(side_effect=[labels_resp, sample_resp])
@@ -362,9 +354,7 @@ class TestGetSchemaGaps:
         assert schema.sample_log is None
 
     @pytest.mark.asyncio
-    async def test_labels_response_no_data_key_then_no_extra_fields(
-        self, provider: LokiProvider
-    ):
+    async def test_labels_response_no_data_key_then_no_extra_fields(self, provider: LokiProvider):
         labels_resp = _make_mock_response(200, {"status": "success"})
         mock_client = MagicMock()
         mock_client.get = AsyncMock(return_value=labels_resp)

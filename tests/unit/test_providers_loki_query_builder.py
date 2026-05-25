@@ -62,7 +62,7 @@ class TestBuildFilterLogql:
 
     def test_when_no_filters_then_returns_selector(self):
         params = FilterParams(source="test")
-        assert LokiProvider._build_filter_logql(params, "{app=\"api\"}") == '{app="api"}'
+        assert LokiProvider._build_filter_logql(params, '{app="api"}') == '{app="api"}'
 
     def test_when_level_then_adds_level_label(self):
         params = FilterParams(source="test", level="ERROR")
@@ -84,13 +84,13 @@ class TestBuildFilterLogql:
 
     def test_when_custom_fields_then_adds_json_pipeline(self):
         params = FilterParams(source="test", custom_fields={"env": "prod"})
-        q = LokiProvider._build_filter_logql(params, "{app=\"api\"}")
+        q = LokiProvider._build_filter_logql(params, '{app="api"}')
         assert "| json" in q
         assert '| env="prod"' in q
 
     def test_when_trace_id_then_adds_json_pipeline(self):
         params = FilterParams(source="test", trace_id="abc123")
-        q = LokiProvider._build_filter_logql(params, "{app=\"api\"}")
+        q = LokiProvider._build_filter_logql(params, '{app="api"}')
         assert "| json" in q
         assert '| trace_id="abc123"' in q
 
@@ -101,7 +101,7 @@ class TestBuildAggregateLogql:
     def test_when_count_then_count_over_time(self):
         provider = LokiProvider("test", type("C", (), {"type": "loki"})())
         params = AggregateParams(source="test")
-        q = provider._build_aggregate_logql(params, "{app=\"api\"}")
+        q = provider._build_aggregate_logql(params, '{app="api"}')
         assert q == 'count_over_time({app="api"}[5m])'
 
     def test_when_avg_then_avg_over_time(self):
@@ -216,9 +216,7 @@ class TestParseMetricResults:
         data = {
             "data": {
                 "resultType": "vector",
-                "result": [
-                    {"metric": {"service": "api"}, "value": [1716540000, "42"]}
-                ],
+                "result": [{"metric": {"service": "api"}, "value": [1716540000, "42"]}],
             }
         }
         agg = LokiProvider._parse_metric_results(data)
@@ -258,9 +256,7 @@ class TestParseMetricResults:
         data = {
             "data": {
                 "resultType": "vector",
-                "result": [
-                    {"metric": {"service": "api"}, "value": [1716540000, "bad"]}
-                ],
+                "result": [{"metric": {"service": "api"}, "value": [1716540000, "bad"]}],
             }
         }
         agg = LokiProvider._parse_metric_results(data)

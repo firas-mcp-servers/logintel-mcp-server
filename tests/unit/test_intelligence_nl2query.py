@@ -1,6 +1,5 @@
 """Unit tests for NL2Query and explain functions."""
 
-
 from logintel.intelligence.nl2query import explain, translate
 
 

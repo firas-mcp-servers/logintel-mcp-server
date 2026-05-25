@@ -331,11 +331,7 @@ class TestServerToolNaturalLanguageToQuery:
     def mcp(self, tmp_path):
         config = tmp_path / "config.yaml"
         config.write_text(
-            "sources:\n"
-            "  dd-app:\n"
-            "    type: datadog\n"
-            "    apiKey: test\n"
-            "    appKey: test\n"
+            "sources:\n  dd-app:\n    type: datadog\n    apiKey: test\n    appKey: test\n"
         )
         return create_server(config_path=str(config), log_level="ERROR")
 
@@ -366,11 +362,7 @@ class TestServerToolExplainQuery:
     def mcp(self, tmp_path):
         config = tmp_path / "config.yaml"
         config.write_text(
-            "sources:\n"
-            "  dd-app:\n"
-            "    type: datadog\n"
-            "    apiKey: test\n"
-            "    appKey: test\n"
+            "sources:\n  dd-app:\n    type: datadog\n    apiKey: test\n    appKey: test\n"
         )
         return create_server(config_path=str(config), log_level="ERROR")
 

@@ -37,12 +37,8 @@ class TestAnalyzeRootCause:
             "2026-05-24T10:00:00Z", level="ERROR", message="DB timeout", service="api"
         )
         provider = MagicMock()
-        provider.filter = AsyncMock(
-            return_value=MagicMock(entries=[err], total=1)
-        )
-        provider.search = AsyncMock(
-            return_value=MagicMock(entries=[err], total=1)
-        )
+        provider.filter = AsyncMock(return_value=MagicMock(entries=[err], total=1))
+        provider.search = AsyncMock(return_value=MagicMock(entries=[err], total=1))
         registry = MagicMock()
         registry.get = MagicMock(return_value=provider)
         registry.all_providers = MagicMock(return_value={"src1": provider})

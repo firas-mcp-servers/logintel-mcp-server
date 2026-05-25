@@ -1,6 +1,5 @@
 """Unit tests for QueryCache."""
 
-
 from logintel.cache import QueryCache
 
 

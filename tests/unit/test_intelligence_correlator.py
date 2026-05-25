@@ -39,9 +39,7 @@ class TestCorrelateAcrossSources:
     async def test_when_trace_id_given_then_correlates_by_trace_id(self):
         entry = _make_entry("2026-05-24T10:00:00Z", trace_id="abc123")
         provider = MagicMock()
-        provider.filter = AsyncMock(
-            return_value=MagicMock(entries=[entry], total=1)
-        )
+        provider.filter = AsyncMock(return_value=MagicMock(entries=[entry], total=1))
         registry = MagicMock()
         registry.get = MagicMock(return_value=provider)
 
@@ -61,9 +59,7 @@ class TestCorrelateAcrossSources:
         e1 = _make_entry("2026-05-24T10:00:00Z", service="api")
         e2 = _make_entry("2026-05-24T10:01:00Z", service="api")
         provider = MagicMock()
-        provider.search = AsyncMock(
-            return_value=MagicMock(entries=[e1, e2], total=2)
-        )
+        provider.search = AsyncMock(return_value=MagicMock(entries=[e1, e2], total=2))
         registry = MagicMock()
         registry.get = MagicMock(return_value=provider)
 
@@ -95,9 +91,7 @@ class TestCorrelateAcrossSources:
         e1 = _make_entry("2026-05-24T10:00:00Z", service="api")
         e2 = _make_entry("2026-05-24T10:01:00Z", service="other")
         provider = MagicMock()
-        provider.search = AsyncMock(
-            return_value=MagicMock(entries=[e1, e2], total=2)
-        )
+        provider.search = AsyncMock(return_value=MagicMock(entries=[e1, e2], total=2))
         registry = MagicMock()
         registry.get = MagicMock(return_value=provider)
 
@@ -107,9 +101,7 @@ class TestCorrelateAcrossSources:
             time_range={"from": "now-1h", "to": "now"},
             service="api",
         )
-        total_in_groups = sum(
-            len(g["entries"]) for g in result["groups"]
-        )
+        total_in_groups = sum(len(g["entries"]) for g in result["groups"])
         assert total_in_groups == 1
 
 

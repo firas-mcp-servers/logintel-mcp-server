@@ -43,9 +43,7 @@ async def compare_periods(
         "error_rate": {
             "baseline": round(baseline_stats["error_rate"], 4),
             "comparison": round(comparison_stats["error_rate"], 4),
-            "change": round(
-                comparison_stats["error_rate"] - baseline_stats["error_rate"], 4
-            ),
+            "change": round(comparison_stats["error_rate"] - baseline_stats["error_rate"], 4),
         },
         "top_messages_baseline": baseline_stats["top_messages"],
         "top_messages_comparison": comparison_stats["top_messages"],

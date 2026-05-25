@@ -38,21 +38,17 @@ class LokiProvider(LogProvider):
     def __init__(self, source_id: str, config: SourceConfig) -> None:
         self._id = source_id
         self._url: str = getattr(config, "url", "http://localhost:3100")
-        self._username: str | None = (
-            getattr(config, "basicAuth", {}).get("username")
-            or getattr(config, "basic_auth", {}).get("username")
+        self._username: str | None = getattr(config, "basicAuth", {}).get("username") or getattr(
+            config, "basic_auth", {}
+        ).get("username")
+        self._password: str | None = getattr(config, "basicAuth", {}).get("password") or getattr(
+            config, "basic_auth", {}
+        ).get("password")
+        self._tenant_id: str | None = getattr(config, "tenantId", None) or getattr(
+            config, "tenant_id", None
         )
-        self._password: str | None = (
-            getattr(config, "basicAuth", {}).get("password")
-            or getattr(config, "basic_auth", {}).get("password")
-        )
-        self._tenant_id: str | None = getattr(
-            config, "tenantId", None
-        ) or getattr(config, "tenant_id", None)
         self._default_labels: dict[str, str] = (
-            getattr(config, "defaultLabels", {})
-            or getattr(config, "default_labels", {})
-            or {}
+            getattr(config, "defaultLabels", {}) or getattr(config, "default_labels", {}) or {}
         )
         self._client: httpx.AsyncClient | None = None
 
@@ -208,9 +204,7 @@ class LokiProvider(LogProvider):
                     parsed = json.loads(line)
                     if isinstance(parsed, dict):
                         message = str(parsed.get("message", parsed.get("msg", line)))
-                        level = str(
-                            parsed.get("level", parsed.get("severity", "UNKNOWN"))
-                        ).upper()
+                        level = str(parsed.get("level", parsed.get("severity", "UNKNOWN"))).upper()
                         service = parsed.get("service", service)
                         host = parsed.get("host", host)
                         trace_id = parsed.get("trace_id") or parsed.get("traceId")
@@ -280,9 +274,7 @@ class LokiProvider(LogProvider):
                     except (ValueError, TypeError, IndexError):
                         val = 0.0
                     count = len(values)
-                    buckets.append(
-                        AggregateBucket(key=dict(metric), value=val, count=count)
-                    )
+                    buckets.append(AggregateBucket(key=dict(metric), value=val, count=count))
                     total += count
 
         return AggregateResult(buckets=buckets, total=total)
@@ -460,9 +452,7 @@ class LokiProvider(LogProvider):
                 labels = result_data.get("data", [])
                 for label in labels:
                     if label not in ("timestamp", "message", "level", "service", "host"):
-                        fields.append(
-                            SchemaField(name=label, type="string", required=False)
-                        )
+                        fields.append(SchemaField(name=label, type="string", required=False))
 
                 sample_resp = await client.get(
                     "/loki/api/v1/query_range",

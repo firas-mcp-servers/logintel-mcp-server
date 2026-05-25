@@ -199,9 +199,7 @@ class TestFilter:
         mock_client.get = AsyncMock(return_value=mock_resp)
         provider._client = mock_client
 
-        await provider.filter(
-            FilterParams(source="loki-test", level="ERROR", service="payment")
-        )
+        await provider.filter(FilterParams(source="loki-test", level="ERROR", service="payment"))
         call_params = mock_client.get.call_args.kwargs["params"]
         assert call_params["query"] == '{level="error",service="payment"}'
 
@@ -214,9 +212,7 @@ class TestFilter:
         mock_client.get = AsyncMock(return_value=mock_resp)
         provider._client = mock_client
 
-        await provider.filter(
-            FilterParams(source="loki-test", custom_fields={"env": "prod"})
-        )
+        await provider.filter(FilterParams(source="loki-test", custom_fields={"env": "prod"}))
         call_params = mock_client.get.call_args.kwargs["params"]
         assert call_params["query"] == '{app="api"} | json | env="prod"'
 
@@ -282,9 +278,7 @@ class TestAggregate:
         mock_client.get = AsyncMock(return_value=mock_resp)
         provider._client = mock_client
 
-        await provider.aggregate(
-            AggregateParams(source="loki-test", group_by=["service"])
-        )
+        await provider.aggregate(AggregateParams(source="loki-test", group_by=["service"]))
         call_params = mock_client.get.call_args.kwargs["params"]
         assert "sum by (service)" in call_params["query"]
 
@@ -384,9 +378,7 @@ class TestTail:
 class TestGetSchema:
     @pytest.mark.asyncio
     async def test_labels_endpoint_succeeds_adds_discovered_labels(self, provider: LokiProvider):
-        labels_resp = _make_mock_response(
-            200, {"status": "success", "data": ["env", "version"]}
-        )
+        labels_resp = _make_mock_response(200, {"status": "success", "data": ["env", "version"]})
         sample_resp = _make_mock_response(
             200,
             {
@@ -426,12 +418,8 @@ class TestGetSchema:
         assert schema.sample_log is None
 
     @pytest.mark.asyncio
-    async def test_sample_query_no_data_returns_schema_without_sample(
-        self, provider: LokiProvider
-    ):
-        labels_resp = _make_mock_response(
-            200, {"status": "success", "data": ["env"]}
-        )
+    async def test_sample_query_no_data_returns_schema_without_sample(self, provider: LokiProvider):
+        labels_resp = _make_mock_response(200, {"status": "success", "data": ["env"]})
         sample_resp = _make_mock_response(
             200, {"status": "success", "data": {"resultType": "streams", "result": []}}
         )

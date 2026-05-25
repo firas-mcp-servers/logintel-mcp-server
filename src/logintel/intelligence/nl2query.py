@@ -89,9 +89,9 @@ def _translate_cloudwatch(q_lower: str, original: str) -> dict[str, Any]:
     filters: list[str] = []
 
     if "error" in q_lower:
-        filters.append('fields @timestamp, @message | filter @message like /error/i')
+        filters.append("fields @timestamp, @message | filter @message like /error/i")
     elif "warn" in q_lower or "warning" in q_lower:
-        filters.append('fields @timestamp, @message | filter @message like /warn/i')
+        filters.append("fields @timestamp, @message | filter @message like /warn/i")
     else:
         filters.append("fields @timestamp, @message")
 
@@ -249,9 +249,9 @@ def _explain_loki(query: str) -> str:
     parts: list[str] = ["Loki LogQL query"]
     if "{}" in query:
         parts.append("selects all streams")
-    if "level=\"error\"" in query.lower():
+    if 'level="error"' in query.lower():
         parts.append("filters for ERROR-level logs")
-    if "level=\"warn\"" in query.lower():
+    if 'level="warn"' in query.lower():
         parts.append("filters for WARN-level logs")
     if "service=" in query.lower():
         svc = query.lower().split('service="', 1)[1].split('"')[0]

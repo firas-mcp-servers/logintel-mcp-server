@@ -156,9 +156,7 @@ def _identify_causes(
         )
 
     # Heuristic 4: Warn-level spikes before errors (causality)
-    warn_count = sum(
-        1 for c in context if c["entry"].level in ("WARN", "WARNING")
-    )
+    warn_count = sum(1 for c in context if c["entry"].level in ("WARN", "WARNING"))
     if warn_count > len(errors):
         causes.append(
             {

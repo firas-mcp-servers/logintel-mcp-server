@@ -87,9 +87,7 @@ class TestProviderRegistryLoki:
     """Scenarios for Loki provider registration."""
 
     def test_when_type_is_loki_then_returns_loki_provider(self):
-        settings = Settings(
-            sources={"loki-app": SourceConfig(type="loki", url="http://loki:3100")}
-        )
+        settings = Settings(sources={"loki-app": SourceConfig(type="loki", url="http://loki:3100")})
         registry = ProviderRegistry(settings)
         provider = registry.get("loki-app")
         assert provider.type == "loki"
