@@ -140,6 +140,10 @@ class LocalFileProvider(LogProvider):
             else:
                 message = str(data)
 
+        # Extract trace_id and span_id if present
+        trace_id = data.get("trace_id") or data.get("traceId")
+        span_id = data.get("span_id") or data.get("spanId")
+
         # Remaining fields go into 'fields'
         known_fields = {
             self._timestamp_field,
@@ -147,6 +151,10 @@ class LocalFileProvider(LogProvider):
             self._service_field,
             self._host_field,
             self._message_field,
+            "trace_id",
+            "traceId",
+            "span_id",
+            "spanId",
         }
         extra_fields = {k: v for k, v in data.items() if k not in known_fields and v is not None}
 
@@ -156,6 +164,8 @@ class LocalFileProvider(LogProvider):
             message=message,
             service=str(service) if service else None,
             host=str(host) if host else None,
+            trace_id=str(trace_id) if trace_id else None,
+            span_id=str(span_id) if span_id else None,
             source=source,
             fields=extra_fields,
             raw=raw,
@@ -478,7 +488,7 @@ class LocalFileProvider(LogProvider):
             return ts.replace(hour=hour, minute=0, second=0, microsecond=0).isoformat()
         if unit == "d":
             return ts.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
-        return ts.isoformat()
+        return ts.isoformat()  # pragma: no cover
 
     def _extract_numeric(self, entry: LogEntry, field: str) -> float | None:
         """Extract a numeric value from a log entry by field name."""

@@ -18,6 +18,8 @@ class SourceConfig(BaseModel):
 class DefaultsConfig(BaseModel):
     """Default settings for queries."""
 
+    model_config = {"populate_by_name": True}
+
     time_range: str = Field(default="1h", alias="timeRange")
     max_results: int = Field(default=100, alias="maxResults")
     timezone: str = "UTC"
@@ -25,6 +27,8 @@ class DefaultsConfig(BaseModel):
 
 class IntelligenceConfig(BaseModel):
     """Intelligence layer settings."""
+
+    model_config = {"populate_by_name": True}
 
     enable_caching: bool = Field(default=True, alias="enableCaching")
     cache_ttl_seconds: int = Field(default=60, alias="cacheTtlSeconds")

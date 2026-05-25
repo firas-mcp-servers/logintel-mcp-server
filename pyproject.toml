@@ -37,6 +37,7 @@ pytest-httpx = "^0.35"
 moto = "^5.0"
 respx = "^0.22"
 ruff = "^0.9"
+pytest-cov = "^7.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -45,6 +46,21 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+addopts = "--cov=src/logintel --cov-report=term-missing --cov-fail-under=100"
+
+[tool.coverage.run]
+source = ["src/logintel"]
+omit = ["*/__main__.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
 
 [tool.ruff]
 line-length = 100

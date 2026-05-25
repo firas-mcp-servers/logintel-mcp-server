@@ -193,16 +193,16 @@ CLI Entry:     logintel (poetry script or python -m logintel)
 - [x] `aggregate_logs` — count, group by field, time bucketing
 - [x] `summarize_logs` — feed logs to LLM for summarization
 
-### Phase 2: CloudWatch Provider (Week 2-3)
+### Phase 2: CloudWatch Provider (Week 2-3) ✅
 
-- [ ] Implement `CloudWatchProvider`
-- [ ] `search_logs` — CloudWatch Logs Insights queries
-- [ ] `filter_logs` — translate to Insights filter syntax
-- [ ] `aggregate_logs` — stats commands in Insights
-- [ ] `detect_error_patterns` — use `patterns` command
-- [ ] `find_anomalies` — use anomaly detection API
-- [ ] `natural_language_to_query` — NL → CloudWatch Logs Insights query
-- [ ] Cross-account observability support
+- [x] Implement `CloudWatchProvider`
+- [x] `search_logs` — CloudWatch Logs Insights queries
+- [x] `filter_logs` — translate to Insights filter syntax
+- [x] `aggregate_logs` — stats commands in Insights
+- [x] `detect_error_patterns` — stub (Phase 5)
+- [x] `find_anomalies` — stub (Phase 5)
+- [x] `natural_language_to_query` — query builder exposed for host LLM translation
+- [x] Cross-account observability support (STS assume_role)
 
 ### Phase 3: Datadog Provider (Week 3-4)
 
@@ -659,4 +659,4 @@ Or with `uvx` (if published to PyPI):
 
 ---
 
-*Last updated: 2026-05-24*
+*Last updated: 2026-05-25*

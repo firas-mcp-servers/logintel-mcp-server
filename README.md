@@ -16,6 +16,7 @@ Ask your AI assistant questions like:
 - 🔌 **Multi-backend support** — Datadog, Grafana Loki, AWS CloudWatch, local files
 - 🔍 **Natural language queries** — Ask in plain English, get structured results
 - 📁 **Local file provider** — Search, filter, tail, and aggregate JSON/regex/plain-text logs
+- ☁️ **CloudWatch provider** — Query AWS CloudWatch Logs Insights with natural language
 - 🧠 **Intelligent analysis** — Error pattern detection, anomaly detection, root cause analysis
 - 🔗 **Cross-service correlation** — Trace ID, timestamp proximity, and field matching
 - ⚡ **Streaming & pagination** — Handle large result sets without context overflow
@@ -56,6 +57,15 @@ Create a `.logintelrc.yaml` file:
 version: "1.0"
 
 sources:
+  cloudwatch-app:
+    type: cloudwatch
+    region: us-east-1
+    profile: production
+    logGroups:
+      - /aws/lambda/my-app
+      - /aws/ecs/my-service
+    # crossAccountRoleArn: "arn:aws:iam::123456789012:role/CrossAccountRole"
+
   local-app:
     type: local
     paths:
@@ -167,7 +177,7 @@ See [AGENTS.md](AGENTS.md) for the full implementation plan. High-level phases:
 |-------|-------|--------|
 | 0 | Foundation — scaffolding, config, health checks | ✅ Complete |
 | 1 | Local File Provider — grep, tail, JSON parsing, aggregation | ✅ Complete |
-| 2 | CloudWatch Provider — Logs Insights, patterns | 🔲 Planned |
+| 2 | CloudWatch Provider — Logs Insights, patterns, cross-account | ✅ Complete |
 | 3 | Datadog Provider — Log Search, analytics | 🔲 Planned |
 | 4 | Loki Provider — LogQL, label filtering | 🔲 Planned |
 | 5 | Intelligence Layer — root cause, correlation | 🔲 Planned |

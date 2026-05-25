@@ -20,9 +20,10 @@ def parse_relative_time(value: str, reference: datetime | None = None) -> dateti
     reference = reference or datetime.now(UTC)
     value = value.strip()
 
-    # Try ISO 8601 first (before lowercasing)
+    # Try ISO 8601 first (before lowercasing, normalize T and Z)
+    iso_value = value.upper().replace("Z", "+00:00")
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return datetime.fromisoformat(iso_value)
     except ValueError:
         pass
 
@@ -73,5 +74,8 @@ def _parse_delta(delta_str: str) -> timedelta:
             i += 1
         else:
             raise ValueError(f"Invalid delta format: {delta_str}")
+
+    if current_number:
+        raise ValueError(f"Invalid delta format: {delta_str}")
 
     return timedelta(seconds=total_seconds)
