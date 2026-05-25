@@ -3,6 +3,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Poetry](https://img.shields.io/badge/packaging-poetry-purple.svg)](https://python-poetry.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Tests](https://github.com/firas-mcp-servers/logintel-mcp-server/actions/workflows/test.yml/badge.svg)](https://github.com/firas-mcp-servers/logintel-mcp-server/actions/workflows/test.yml)
 
 > **Universal Model Context Protocol (MCP) server** that connects LLMs to application logs across Datadog, Grafana Loki, AWS CloudWatch, and local log files.
 
@@ -10,6 +11,7 @@ Ask your AI assistant questions like:
 - *"Why did orders spike at 2 AM?"*
 - *"Find all timeout errors in the payment service from last hour"*
 - *"Correlate 500 errors across api, payment, and db services"*
+- *"Compare error rates before and after the deployment at 3 PM"*
 
 ## Features
 
@@ -17,36 +19,73 @@ Ask your AI assistant questions like:
 - 🔍 **Natural language queries** — Ask in plain English, get structured results
 - 📁 **Local file provider** — Search, filter, tail, and aggregate JSON/regex/plain-text logs
 - ☁️ **CloudWatch provider** — Query AWS CloudWatch Logs Insights with natural language
-- 🧠 **Intelligent analysis** — Error pattern detection, anomaly detection, root cause analysis
+- 📊 **Datadog provider** — Search and aggregate via Datadog Logs v2 API
+- 🔥 **Loki provider** — Query Grafana Loki with LogQL label matchers and metric queries
+- 🧠 **Intelligent analysis** — Root cause analysis, cross-service correlation, anomaly detection
 - 🔗 **Cross-service correlation** — Trace ID, timestamp proximity, and field matching
-- ⚡ **Streaming & pagination** — Handle large result sets without context overflow
+- ⚡ **Caching & pagination** — TTL cache for repeated queries; cursor-based pagination
 - 🛡️ **Read-only by default** — Safe to use in production; no log mutation
 
-### Implemented MCP Tools
+### MCP Tools
 
-| Tool | Description | Phase |
-|------|-------------|-------|
-| `list_log_sources` | List all configured log sources | 0 |
-| `get_source_health` | Check connectivity of a source | 0 |
-| `get_source_schema` | Get field/schema info for a source | 0 |
-| `search_logs` | Search logs with natural language or query | 1 |
-| `filter_logs` | Filter by time, level, service, host, fields | 1 |
-| `tail_logs` | Return latest N entries from a source | 1 |
-| `aggregate_logs` | Count/group by field, time bucketing | 1 |
-| `summarize_logs` | Generate natural language summary | 1 |
+| Tool | Description |
+|------|-------------|
+| `list_log_sources` | List all configured log sources |
+| `get_source_health` | Check connectivity of a source |
+| `get_source_schema` | Get field/schema info for a source |
+| `search_logs` | Search logs with natural language or query |
+| `filter_logs` | Filter by time, level, service, host, custom fields |
+| `tail_logs` | Return latest N entries from a source |
+| `aggregate_logs` | Count/group by field, time bucketing |
+| `summarize_logs` | Generate natural language summary |
+| `correlate_logs` | Cross-source correlation by trace_id or timestamp |
+| `analyze_root_cause` | Multi-step incident root cause analysis |
+| `compare_time_periods` | Before/after comparison with diff report |
+| `detect_error_patterns` | Detect recurring error patterns |
+| `find_anomalies` | Statistical anomaly detection |
+| `natural_language_to_query` | Translate NL to provider query syntax |
+| `explain_query` | Explain a provider-native query in plain English |
+
+### MCP Prompts
+
+| Prompt | Description |
+|--------|-------------|
+| `investigate_incident` | Structured 6-step SRE investigation workflow |
+| `oncall_summary` | Generate a concise shift summary |
 
 ## Quick Start
 
 ### Installation
 
+#### PyPI (recommended)
+
 ```bash
-# Using Poetry (development)
+pip install logintel-mcp
+
+# Or with uv
+uv pip install logintel-mcp
+uvx -y logintel-mcp --config ~/.logintelrc.yaml
+```
+
+#### npm (wrapper)
+
+```bash
+npx -y @logintel/mcp-server --config ~/.logintelrc.yaml
+```
+
+#### Docker (GHCR)
+
+```bash
+docker run --rm -v "$HOME/.logintelrc.yaml:/etc/logintel/.logintelrc.yaml" \
+  ghcr.io/firas-mcp-servers/logintel-mcp-server:latest
+```
+
+#### From source
+
+```bash
 git clone https://github.com/firas-mcp-servers/logintel-mcp-server.git
 cd logintel-mcp-server
 poetry install
-
-# Using uv (if published to PyPI)
-uvx -y logintel-mcp --config ~/.logintelrc.yaml
 ```
 
 ### Configuration
@@ -54,17 +93,26 @@ uvx -y logintel-mcp --config ~/.logintelrc.yaml
 Create a `.logintelrc.yaml` file:
 
 ```yaml
-version: "1.0"
-
 sources:
+  datadog-prod:
+    type: datadog
+    apiKey: "${DATADOG_API_KEY}"
+    appKey: "${DATADOG_APP_KEY}"
+    site: "datadoghq.com"
+    defaultIndexes: ["main", "prod"]
+
+  loki-default:
+    type: loki
+    url: "http://localhost:3100"
+    defaultLabels:
+      app: "api"
+
   cloudwatch-app:
     type: cloudwatch
-    region: us-east-1
-    profile: production
+    region: "us-east-1"
+    profile: "production"
     logGroups:
-      - /aws/lambda/my-app
-      - /aws/ecs/my-service
-    # crossAccountRoleArn: "arn:aws:iam::123456789012:role/CrossAccountRole"
+      - "/aws/lambda/my-app"
 
   local-app:
     type: local
@@ -79,34 +127,27 @@ defaults:
   timeRange: "1h"
   maxResults: 100
   timezone: "UTC"
+
+intelligence:
+  enableCaching: true
+  cacheTtlSeconds: 60
+  anomalySensitivity: "medium"
+  maxCorrelationDepth: 3
 ```
 
 ### Run the Server
 
 ```bash
 # stdio transport (default)
-poetry run logintel --config ./.logintelrc.yaml
+logintel-mcp --config ~/.logintelrc.yaml
 
 # Or via Python module
-poetry run python -m logintel --config ./.logintelrc.yaml
+python -m logintel --config ~/.logintelrc.yaml
 ```
 
 ### Claude Desktop Integration
 
 Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "log-intel": {
-      "command": "poetry",
-      "args": ["run", "python", "-m", "logintel", "--config", "/path/to/.logintelrc.yaml"]
-    }
-  }
-}
-```
-
-Or with `uvx` (if published to PyPI):
 
 ```json
 {
@@ -119,18 +160,53 @@ Or with `uvx` (if published to PyPI):
 }
 ```
 
+Or with Docker:
+
+```json
+{
+  "mcpServers": {
+    "log-intel": {
+      "command": "docker",
+      "args": [
+        "run", "--rm", "-i",
+        "-v", "/path/to/.logintelrc.yaml:/etc/logintel/.logintelrc.yaml",
+        "ghcr.io/firas-mcp-servers/logintel-mcp-server:latest"
+      ]
+    }
+  }
+}
+```
+
+### Cursor Integration
+
+Add to `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "log-intel": {
+      "command": "npx",
+      "args": ["-y", "@logintel/mcp-server", "--config", "./.logintelrc.yaml"]
+    }
+  }
+}
+```
+
 ## Development
 
 ```bash
 # Install dependencies
-poetry install
+poetry install --with dev
 
-# Run tests
-poetry run pytest
+# Run tests (100% coverage gate)
+poetry run pytest --cov=src/logintel --cov-fail-under=100
 
-# Linting
-poetry run ruff check src tests
-poetry run ruff format src tests
+# Or use the convenience tasks
+poetry run poe test       # full suite with coverage
+poetry run poe test-fast  # quick run without coverage
+poetry run poe lint       # ruff check
+poetry run poe fix        # ruff check --fix + ruff format
+poetry run poe check      # lint + test combo
 
 # Run MCP Inspector for manual testing
 poetry run python -m logintel --config ./examples/config.yaml
@@ -171,21 +247,15 @@ npx -y @modelcontextprotocol/inspector
 
 ## Roadmap
 
-See [AGENTS.md](AGENTS.md) for the full implementation plan. High-level phases:
-
 | Phase | Focus | Status |
 |-------|-------|--------|
 | 0 | Foundation — scaffolding, config, health checks | ✅ Complete |
-| 1 | Local File Provider — grep, tail, JSON parsing, aggregation | ✅ Complete |
-| 2 | CloudWatch Provider — Logs Insights, patterns, cross-account | ✅ Complete |
-| 3 | Datadog Provider — Log Search, analytics | 🔲 Planned |
-| 4 | Loki Provider — LogQL, label filtering | 🔲 Planned |
-| 5 | Intelligence Layer — root cause, correlation | 🔲 Planned |
-| 6 | Polish — tests, Docker, PyPI, CI/CD | 🔲 Planned |
-
-## Contributing
-
-We welcome contributions! Please read our [Code of Conduct](CODE_OF_CONDUCT.md) and open an issue or pull request.
+| 1 | Local File Provider | ✅ Complete |
+| 2 | CloudWatch Provider | ✅ Complete |
+| 3 | Datadog Provider | ✅ Complete |
+| 4 | Loki Provider | ✅ Complete |
+| 5 | Intelligence Layer — root cause, correlation, caching | ✅ Complete |
+| 6 | Polish — Docker, PyPI, npm, CI/CD, docs | ✅ Complete |
 
 ## License
 
