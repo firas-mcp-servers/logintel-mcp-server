@@ -91,9 +91,10 @@ class ProviderRegistry:
             from logintel.providers.datadog import DatadogProvider
 
             return DatadogProvider(source_id, config)
-        # elif config.type == "loki":
-        #     from logintel.providers.loki import LokiProvider
-        #     return LokiProvider(source_id, config)
+        elif config.type == "loki":
+            from logintel.providers.loki import LokiProvider
+
+            return LokiProvider(source_id, config)
         return StubProvider(source_id, config.type, config)
 
     def get(self, source_id: str) -> LogProvider:
